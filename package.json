@@ -1,0 +1,22 @@
+{
+  "name": "b3js-benchmark",
+  "version": "1.0.0",
+  "description": "Benchmark comparison for BLAKE3 implementations",
+  "type": "module",
+  "scripts": {
+    "bench": "bun run benchmark.ts",
+    "install-deps": "bun install"
+  },
+  "dependencies": {
+    "b3js": "^0.2.0",
+    "blake3": "^2.1.7",
+    "blake3-js": "^0.0.5"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
+
