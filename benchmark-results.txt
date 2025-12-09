@@ -1,0 +1,107 @@
+BLAKE3 Implementation Benchmark Comparison
+
+Loading implementations...
+
+✓ Loaded blake3-js
+✓ Loaded blake3 (Rust/WASM)
+✗ Failed to load blake3-fast: error: Cannot find package 'blake3-fast' from '/Users/partha/Documents/javascript/b3js-benchmark/benchmark.ts'
+✓ Loaded blake3-numi2
+✓ Loaded blake3-optimized
+✓ Loaded bk3js
+
+====================================================================================================
+Benchmark Suite
+====================================================================================================
+
+
+📊 Test: Small (11 bytes)
+----------------------------------------------------------------------------------------------------
+
+====================================================================================================
+Results:
+====================================================================================================
+b3js                      26.58ms | 0.0027ms/op | 376170 ops/sec | 22.8% of fastest | 4.39x slower
+blake3-js                 1695.10ms | 0.1695ms/op | 5899 ops/sec | 0.4% of fastest | 280.03x slower
+blake3 (Rust/WASM)        7.92ms | 0.0008ms/op | 1262899 ops/sec | 76.4% of fastest | 1.31x slower
+blake3-numi2              12.05ms | 0.0012ms/op | 830102 ops/sec | 50.2% of fastest | 1.99x slower
+blake3-optimized          7.14ms | 0.0007ms/op | 1399719 ops/sec | 84.7% of fastest | 1.18x slower
+bk3js                     6.05ms | 0.0006ms/op | 1652017 ops/sec | 100.0% of fastest | 1.00x slower 🏆
+====================================================================================================
+
+📊 Test: Medium (1KB)
+----------------------------------------------------------------------------------------------------
+
+====================================================================================================
+Results:
+====================================================================================================
+b3js                      7.68ms | 0.0077ms/op | 130148 ops/sec | 29.0% of fastest | 3.45x slower
+blake3-js                 2816.89ms | 2.8169ms/op | 355 ops/sec | 0.1% of fastest | 1264.93x slower
+blake3 (Rust/WASM)        2.23ms | 0.0022ms/op | 449052 ops/sec | 100.0% of fastest | 1.00x slower 🏆
+blake3-numi2              6.95ms | 0.0070ms/op | 143802 ops/sec | 32.0% of fastest | 3.12x slower
+blake3-optimized          3.48ms | 0.0035ms/op | 287652 ops/sec | 64.1% of fastest | 1.56x slower
+bk3js                     3.71ms | 0.0037ms/op | 269645 ops/sec | 60.0% of fastest | 1.67x slower
+====================================================================================================
+
+📊 Test: Large (100KB)
+----------------------------------------------------------------------------------------------------
+
+====================================================================================================
+Results:
+====================================================================================================
+b3js                      72.52ms | 0.7252ms/op | 1379 ops/sec | 13.6% of fastest | 7.34x slower
+blake3-js                 30023.80ms | 300.2380ms/op | 3 ops/sec | 0.0% of fastest | 3039.10x slower
+blake3 (Rust/WASM)        12.70ms | 0.1270ms/op | 7873 ops/sec | 77.8% of fastest | 1.29x slower
+blake3-numi2              61.54ms | 0.6154ms/op | 1625 ops/sec | 16.1% of fastest | 6.23x slower
+blake3-optimized          30.57ms | 0.3057ms/op | 3271 ops/sec | 32.3% of fastest | 3.09x slower
+bk3js                     9.88ms | 0.0988ms/op | 10122 ops/sec | 100.0% of fastest | 1.00x slower 🏆
+====================================================================================================
+
+📊 Test: Very Large (1MB)
+----------------------------------------------------------------------------------------------------
+
+====================================================================================================
+Results:
+====================================================================================================
+b3js                      62.86ms | 6.2857ms/op | 159 ops/sec | 12.2% of fastest | 8.22x slower
+blake3-js                 29998.95ms | 2999.8945ms/op | 0 ops/sec | 0.0% of fastest | 3923.16x slower
+blake3 (Rust/WASM)        11.75ms | 1.1746ms/op | 851 ops/sec | 65.1% of fastest | 1.54x slower
+blake3-numi2              50.06ms | 5.0058ms/op | 200 ops/sec | 15.3% of fastest | 6.55x slower
+blake3-optimized          16.59ms | 1.6590ms/op | 603 ops/sec | 46.1% of fastest | 2.17x slower
+bk3js                     7.65ms | 0.7647ms/op | 1308 ops/sec | 100.0% of fastest | 1.00x slower 🏆
+====================================================================================================
+
+📊 Test: Streaming (100 chunks of 1KB each)
+----------------------------------------------------------------------------------------------------
+
+====================================================================================================
+Results:
+====================================================================================================
+b3js (streaming)          65.28ms | 0.6528ms/op | 1532 ops/sec | 21.5% of fastest | 4.66x slower
+blake3-js (streaming)     30974.80ms | 309.7480ms/op | 3 ops/sec | 0.0% of fastest | 2209.39x slower
+blake3 (streaming)        14.02ms | 0.1402ms/op | 7133 ops/sec | 100.0% of fastest | 1.00x slower 🏆
+====================================================================================================
+
+====================================================================================================
+Correctness Verification
+====================================================================================================
+b3js:        d74981efa70a0c880b8d8c1985d075dbcbf679b99a5f9914e5aaf96b831a9e24
+blake3-js:   d74981efa70a0c880b8d8c1985d075dbcbf679b99a5f9914e5aaf96b831a9e24
+Match: ✓
+blake3:      d74981efa70a0c880b8d8c1985d075dbcbf679b99a5f9914e5aaf96b831a9e24
+Match: ✓
+blake3-numi2: 20a334748b2000b30b7758c4070f9e9bcf13f060b27c46008887baafa336492d
+Match: ✗
+blake3-optimized: d74981efa70a0c880b8d8c1985d075dbcbf679b99a5f9914e5aaf96b831a9e24
+Match: ✓
+bk3js: d74981efa70a0c880b8d8c1985d075dbcbf679b99a5f9914e5aaf96b831a9e24
+Match: ✓
+
+====================================================================================================
+Benchmark Complete!
+====================================================================================================
+
+Note: Results may vary based on:
+  - JavaScript engine and version
+  - CPU architecture and features
+  - System load and thermal state
+  - Input size and memory alignment
