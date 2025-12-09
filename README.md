@@ -1,10 +1,18 @@
 # BLAKE3 Benchmark Comparison
 
-This directory contains benchmark scripts to compare different BLAKE3 implementations:
+This directory contains benchmark scripts to compare different BLAKE3 implementations.
 
-- **b3js** - Our optimized pure JavaScript implementation
-- **blake3-js** - Pure JavaScript implementation
-- **blake3** - Rust/WASM implementation
+## Implementations Benchmarked
+
+The benchmark compares the following BLAKE3 implementations:
+
+1. **b3js** - Our optimized pure JavaScript implementation
+2. **blake3-js** - Pure JavaScript implementation (npm: `blake3-js`)
+3. **blake3** - Rust/WASM implementation (npm: `blake3`)
+4. **blake3-fast** - WASM SIMD implementation (github: `Atamanov/blake3-fast`)
+5. **blake3-numi2** - Pure JavaScript implementation (github: `Numi2/Blake3inJavasScript`)
+6. **blake3-optimized** - Optimized JavaScript implementation (github: `lamb356/blake3-optimized`)
+7. **bk3js** - JavaScript implementation with WASM support (github: `chimmykk/Bk3JS`)
 
 ## Setup
 
@@ -16,13 +24,19 @@ bun install
 npm install
 ```
 
-**Note:** The benchmark script expects `b3js` to be in a sibling directory (`../b3js/`). 
-If you've installed `b3js` as a package, update the import in `benchmark.ts` accordingly.
+**Note:** The benchmark script expects `b3js` to be installed as a package. 
+The other implementations will be installed via npm/bun from their respective sources.
 
 ## Running Benchmarks
 
 ```bash
 bun run benchmark.ts
+```
+
+To save results to a file:
+
+```bash
+bun run benchmark.ts > benchmark-results.txt
 ```
 
 ## What Gets Benchmarked
@@ -45,6 +59,5 @@ The benchmark will show:
 ## Requirements
 
 - Node.js/Bun runtime
-- The `b3js` package should be available in the parent directory or installed
+- The `b3js` package should be available (installed from npm)
 - Other implementations will be installed via npm/bun
-
