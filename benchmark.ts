@@ -5,6 +5,10 @@
  * - b3js (our optimized implementation)
  * - blake3-js (pure JS implementation)
  * - blake3 (Rust/WASM implementation)
+ * - blake3-fast (WASM SIMD implementation)
+ * - blake3-numi2 (Numi2's pure JS implementation)
+ * - blake3-optimized (lamb356's optimized JS implementation)
+ * - bk3js (chimmykk's JS implementation)
  */
 
 // Import b3js from package
@@ -15,6 +19,11 @@ let blake3jsHash: ((input: Uint8Array | string) => Uint8Array) | null = null;
 let blake3jsCreateHasher: (() => any) | null = null;
 let blake3Hash: ((input: Uint8Array | string) => Uint8Array) | null = null;
 let blake3CreateHasher: (() => any) | null = null;
+let blake3FastHash: ((input: Uint8Array | string) => Uint8Array) | null = null;
+let blake3FastCreateHasher: (() => any) | null = null;
+let blake3Numi2Hash: ((input: Uint8Array | string) => Uint8Array) | null = null;
+let blake3OptimizedHash: ((input: Uint8Array | string) => Uint8Array) | null = null;
+let bk3jsHash: ((input: Uint8Array | string) => Uint8Array) | null = null;
 
 async function loadImplementations() {
   try {
@@ -64,6 +73,73 @@ async function loadImplementations() {
     console.log('✓ Loaded blake3 (Rust/WASM)');
   } catch (e) {
     console.log('✗ Failed to load blake3:', e);
+  }
+
+  try {
+    const blake3Fast = await import('blake3-fast');
+    blake3FastHash = (input: Uint8Array | string) => {
+      const data = typeof input === 'string' ? new TextEncoder().encode(input) : input;
+      return blake3Fast.hash(data);
+    };
+    blake3FastCreateHasher = () => {
+      const hasher = blake3Fast.createHash();
+      const wrapper = {
+        update: (data: Uint8Array | string) => {
+          const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+          hasher.update(bytes);
+          return wrapper;
+        },
+        digest: () => hasher.digest()
+      };
+      return wrapper;
+    };
+    console.log('✓ Loaded blake3-fast (WASM SIMD)');
+  } catch (e) {
+    console.log('✗ Failed to load blake3-fast:', e);
+  }
+
+  try {
+    // Blake3inJavasScript - single file implementation with ESM exports
+    const blake3Numi2 = await import('blake3-numi2/blake3.js');
+    blake3Numi2Hash = (input: Uint8Array | string) => {
+      const data = typeof input === 'string' ? new TextEncoder().encode(input) : input;
+      return blake3Numi2.hash(data);
+    };
+    console.log('✓ Loaded blake3-numi2');
+  } catch (e) {
+    console.log('✗ Failed to load blake3-numi2:', e);
+  }
+
+  try {
+    // blake3-optimized - CommonJS style
+    const blake3Optimized = await import('blake3-optimized/blake3.js');
+    blake3OptimizedHash = (input: Uint8Array | string) => {
+      const data = typeof input === 'string' ? new TextEncoder().encode(input) : input;
+      // Handle both default export and named export
+      const hashFn = blake3Optimized.default?.hash || blake3Optimized.hash;
+      return hashFn(data);
+    };
+    console.log('✓ Loaded blake3-optimized');
+  } catch (e) {
+    console.log('✗ Failed to load blake3-optimized:', e);
+  }
+
+  try {
+    // bk3js - check the actual export structure
+    const bk3js = await import('bk3js/blake3.js');
+    // Try different export patterns
+    const hashFn = bk3js.default?.hash || bk3js.hash || (bk3js as any).hash;
+    if (hashFn) {
+      bk3jsHash = (input: Uint8Array | string) => {
+        const data = typeof input === 'string' ? new TextEncoder().encode(input) : input;
+        return hashFn(data);
+      };
+      console.log('✓ Loaded bk3js');
+    } else {
+      console.log('✗ Failed to load bk3js: hash function not found');
+    }
+  } catch (e) {
+    console.log('✗ Failed to load bk3js:', e);
   }
 }
 
@@ -167,6 +243,34 @@ async function runBenchmarks() {
       }, testCase.iterations));
     }
 
+    // blake3-fast (WASM SIMD)
+    if (blake3FastHash) {
+      results.push(benchmark('blake3-fast (WASM SIMD)', () => {
+        blake3FastHash!(data);
+      }, testCase.iterations));
+    }
+
+    // blake3-numi2
+    if (blake3Numi2Hash) {
+      results.push(benchmark('blake3-numi2', () => {
+        blake3Numi2Hash!(data);
+      }, testCase.iterations));
+    }
+
+    // blake3-optimized
+    if (blake3OptimizedHash) {
+      results.push(benchmark('blake3-optimized', () => {
+        blake3OptimizedHash!(data);
+      }, testCase.iterations));
+    }
+
+    // bk3js
+    if (bk3jsHash) {
+      results.push(benchmark('bk3js', () => {
+        bk3jsHash!(data);
+      }, testCase.iterations));
+    }
+
     compareResults(results);
   }
 
@@ -209,6 +313,17 @@ async function runBenchmarks() {
     }, iterations));
   }
 
+  // blake3-fast streaming
+  if (blake3FastCreateHasher) {
+    streamingResults.push(benchmark('blake3-fast (streaming)', () => {
+      const hasher = blake3FastCreateHasher!();
+      for (let i = 0; i < 100; i++) {
+        hasher.update(chunk);
+      }
+      hasher.digest();
+    }, iterations));
+  }
+
   compareResults(streamingResults);
 
   // Verify correctness
@@ -231,6 +346,30 @@ async function runBenchmarks() {
     const blake3Result = Array.from(blake3Hash(testInput)).map(b => b.toString(16).padStart(2, '0')).join('');
     console.log(`blake3:      ${blake3Result}`);
     console.log(`Match: ${b3jsResult === blake3Result ? '✓' : '✗'}`);
+  }
+
+  if (blake3FastHash) {
+    const blake3FastResult = Array.from(blake3FastHash(testInput)).map(b => b.toString(16).padStart(2, '0')).join('');
+    console.log(`blake3-fast: ${blake3FastResult}`);
+    console.log(`Match: ${b3jsResult === blake3FastResult ? '✓' : '✗'}`);
+  }
+
+  if (blake3Numi2Hash) {
+    const blake3Numi2Result = Array.from(blake3Numi2Hash(testInput)).map(b => b.toString(16).padStart(2, '0')).join('');
+    console.log(`blake3-numi2: ${blake3Numi2Result}`);
+    console.log(`Match: ${b3jsResult === blake3Numi2Result ? '✓' : '✗'}`);
+  }
+
+  if (blake3OptimizedHash) {
+    const blake3OptimizedResult = Array.from(blake3OptimizedHash(testInput)).map(b => b.toString(16).padStart(2, '0')).join('');
+    console.log(`blake3-optimized: ${blake3OptimizedResult}`);
+    console.log(`Match: ${b3jsResult === blake3OptimizedResult ? '✓' : '✗'}`);
+  }
+
+  if (bk3jsHash) {
+    const bk3jsResult = Array.from(bk3jsHash(testInput)).map(b => b.toString(16).padStart(2, '0')).join('');
+    console.log(`bk3js: ${bk3jsResult}`);
+    console.log(`Match: ${b3jsResult === bk3jsResult ? '✓' : '✗'}`);
   }
 
   console.log('\n' + '='.repeat(100));

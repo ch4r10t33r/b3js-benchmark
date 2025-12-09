@@ -10,7 +10,11 @@
   "dependencies": {
     "b3js": "^0.2.0",
     "blake3": "^2.1.7",
-    "blake3-js": "^0.0.5"
+    "blake3-js": "^0.0.5",
+    "blake3-fast": "github:Atamanov/blake3-fast",
+    "blake3-numi2": "github:Numi2/Blake3inJavasScript",
+    "blake3-optimized": "github:lamb356/blake3-optimized",
+    "bk3js": "github:chimmykk/Bk3JS"
   },
   "devDependencies": {
     "@types/bun": "latest"

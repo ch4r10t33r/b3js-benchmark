@@ -6,8 +6,12 @@
       "name": "b3js-benchmark",
       "dependencies": {
         "b3js": "^0.2.0",
+        "bk3js": "github:chimmykk/Bk3JS",
         "blake3": "^2.1.7",
+        "blake3-fast": "github:Atamanov/blake3-fast",
         "blake3-js": "^0.0.5",
+        "blake3-numi2": "github:Numi2/Blake3inJavasScript",
+        "blake3-optimized": "github:lamb356/blake3-optimized",
       },
       "devDependencies": {
         "@types/bun": "latest",
@@ -24,9 +28,17 @@
 
     "b3js": ["b3js@0.2.0", "", { "peerDependencies": { "typescript": "^5" } }, "sha512-Orlam9RjS6w/u7r48UiRnJO1vvX/hr+NmTj3tnAIwHo06zYNLVSvk2YeTHGBGvtbeFhs3dXWUxr2/hux14sg0w=="],
 
+    "bk3js": ["blake3js@github:chimmykk/Bk3JS#15f0b11", {}, "chimmykk-Bk3JS-15f0b11"],
+
     "blake3": ["blake3@2.1.7", "", {}, "sha512-5d+TdKJvju96IyEaGJ0eO6CHbckWi+NBrCezGYM/WsnI3R03aLL2TWfsuZSh1rs0fTv/L3ps/r0vykjYurcIwA=="],
 
+    "blake3-fast": ["blake3-fast@github:Atamanov/blake3-fast#6d1a800", {}, "Atamanov-blake3-fast-6d1a800"],
+
     "blake3-js": ["blake3-js@0.0.5", "", {}, "sha512-ptT1WvDd+CKDRO+Ea7u8PekEaWd0otmZOj1eAbBzABkfNP1qDA1p0GGRMeMzTM7lUig9cFIBCMwVgmKaY1fTkQ=="],
+
+    "blake3-numi2": ["Blake3inJavasScript@github:Numi2/Blake3inJavasScript#e942f84", {}, "Numi2-Blake3inJavasScript-e942f84"],
+
+    "blake3-optimized": ["blake3-optimized@github:lamb356/blake3-optimized#d506d29", {}, "lamb356-blake3-optimized-d506d29"],
 
     "bun-types": ["bun-types@1.3.4", "", { "dependencies": { "@types/node": "*" } }, "sha512-5ua817+BZPZOlNaRgGBpZJOSAQ9RQ17pkwPD0yR7CfJg+r8DgIILByFifDTa+IPDDxzf5VNhtNlcKqFzDgJvlQ=="],
 
